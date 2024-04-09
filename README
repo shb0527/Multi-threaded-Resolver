@@ -1,0 +1,16 @@
+1. Requester (Producer) 
+    - per 1 requester thread, push all hostnames into queue (max size 8)
+    - while pushing each host name into queue, write that host name into serviced.txt
+    - after finishing processing all the host names in a file, send conditional signal to resolver(consumer)
+    - muter lock to input file, mutex lock to buffer queue, mutex lock to servicex.txt file
+    - mutex lock to thread
+
+2. Resolver (Consumer)
+    - per 1 resolver thread, pop a host name from queue to results.txt
+    - if queue is empty, send conditional signal to producer
+    - mutex lock to buffer queue, mutex lock to results.txt
+
+3. MAIN
+    - pthread_init, pthread_destroy for mutexes
+    - req_num, res_num : the number of requester threads and resolver threads 
+    - pthread_create, pthread_join for loop with the number of req/res threads
